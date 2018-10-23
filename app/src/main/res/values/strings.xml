@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Geog 686 Final Project</string>
     <string name="google_maps_key_zach">AIzaSyBSeu3PZZV79pokz4dQ_2NGBesg3h7-uQU</string>
+    <string name="google_maps_key_colin">AIzaSyBSeu3PZZV79pokz4dQ_2NGBesg3h7-uQU</string>
+    <string name="google_maps_key_ian">AIzaSyBSeu3PZZV79pokz4dQ_2NGBesg3h7-uQU</string>
     <string name="place1">Home</string>
     <string name="place2">Pizza</string>
     <string name="place3">Mall</string>
