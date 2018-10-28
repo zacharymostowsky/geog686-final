@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav1"
+        android:icon="@drawable/ic_menu_add"
+        android:title="@string/nav1" />
+
+    <item
+        android:id="@+id/nav2"
+        android:icon="@drawable/ic_menu_directions"
+        android:title="@string/nav2" />
+
+    <item
+        android:id="@+id/nav3"
+        android:icon="@drawable/ic_menu_mapmode"
+        android:title="@string/nav3"/>
+
+</menu>
