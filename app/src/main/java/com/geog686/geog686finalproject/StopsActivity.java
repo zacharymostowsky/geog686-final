@@ -10,7 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -18,16 +20,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StopsActivity extends AppCompatActivity {
 
+    ListView listview;
+    ArrayAdapter<String> adapter;
+    ArrayList<StopItem> stopItems = new ArrayList<StopItem>();
+
+    // Need to save the activity state when we leave so we are able to reload it.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stops);
-        BottomNavigationView nav = (BottomNavigationView) findViewById(R.id.navigation);
+        System.out.println("Back in Stops");
+        listview = (ListView) findViewById(R.id.stop_list);
 
+        BottomNavigationView nav = (BottomNavigationView) findViewById(R.id.navigation);
         nav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             Intent intent;
             @Override
@@ -56,25 +66,63 @@ public class StopsActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        System.out.println("Resuming Stops");
+        ArrayList<String> stopStrings = getStopNames();
+
+        if(stopStrings != null && stopStrings.size() > 0){
+            System.out.println("Stops is not null");
+            adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, stopStrings);
+            listview.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
+
+    private ArrayList<String> getStopNames(){
+        ArrayList<String> stopStrings = new ArrayList<String>();
+        for(int i = 0; i < stopItems.size(); i++){
+            stopStrings.add(stopItems.get(i).getAddress());
+        }
+        return stopStrings;
+    }
+
     public void onAddStop(View view) {
         EditText locationSearch = (EditText) findViewById(R.id.editText);
         String location = locationSearch.getText().toString();
         List<Address> addressList = null;
-
-
+        System.out.println("Adding stop...");
         if (location != null || !location.equals("")) {
+            System.out.println("Location is not null...");
             Geocoder geocoder = new Geocoder(this);
             try {
                 addressList = geocoder.getFromLocationName(location, 1);
+                Address address = addressList.get(0);
+                // Use latLng to add to map
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                System.out.println("Got the address...");
+                // Create a StopItem object and add it to the list of stops
+                StopItem newStopItem = new StopItem(address.getLatitude(), address.getLongitude(), location);
+                stopItems.add(newStopItem);
+                System.out.println("Stop Item Length: " + stopItems.size());
+                System.out.println("Lat: " + stopItems.get(0).getLat() + "  Lon: " + stopItems.get(0).getLon());
+                adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getStopNames());
+                listview.setAdapter(adapter);
 
             } catch (IOException e) {
+                // Make a toast telling user we couldn't find the address
+                System.out.println("Couldn't geocode address.");
                 e.printStackTrace();
             }
-            Address address = addressList.get(0);
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
         }
 
-        // Create a stoop object and add it to the list corresponding to the view
+
     }
 
 }

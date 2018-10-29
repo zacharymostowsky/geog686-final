@@ -20,6 +20,9 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
 
     <application
@@ -30,16 +33,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MapActivity">
+            android:name=".MapActivity"
+            android:launchMode="singleInstance">
         </activity>
-        <activity android:name=".StopsActivity">
+        <activity
+            android:name=".StopsActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".RouteActivity">
+            android:name=".RouteActivity"
+            android:launchMode="singleInstance">
         </activity>
     </application>
 
