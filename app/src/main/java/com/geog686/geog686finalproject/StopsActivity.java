@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,9 +26,10 @@ import java.util.List;
 
 public class StopsActivity extends AppCompatActivity {
 
-    ListView listview;
-    ArrayAdapter<String> adapter;
-    ArrayList<StopItem> stopItems = new ArrayList<StopItem>();
+    private BottomNavigationView nav;
+    private ListView listview;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<StopItem> stopItems = new ArrayList<StopItem>();
 
     // Need to save the activity state when we leave so we are able to reload it.
     @Override
@@ -36,34 +38,9 @@ public class StopsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stops);
         System.out.println("Back in Stops");
         listview = (ListView) findViewById(R.id.stop_list);
-
-        BottomNavigationView nav = (BottomNavigationView) findViewById(R.id.navigation);
-        nav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            Intent intent;
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.nav1:
-                        //mTextMessage.setText(R.string.nav1);
-                        //intent = new Intent(StopsActivity.this, StopsActivity.class);
-                        //startActivity(intent);
-                        return true;
-                    case R.id.nav2:
-                        //mTextMessage.setText(R.string.nav2);
-                        intent = new Intent(StopsActivity.this, RouteActivity.class);
-                        startActivity(intent);
-                        return true;
-                    case R.id.nav3:
-                        //mTextMessage.setText(R.string.nav3);
-                        //nav.setSelectedItemId(R.id.nav3);
-                        //item.setChecked(true);
-                        intent = new Intent(StopsActivity.this, MapActivity.class);
-                        startActivity(intent);
-                        return true;
-                }
-                return false;
-            }
-        });
+        initRouteButton();
+        initResetButton();
+        initNavBar();
     }
 
     @Override
@@ -110,9 +87,10 @@ public class StopsActivity extends AppCompatActivity {
                 StopItem newStopItem = new StopItem(address.getLatitude(), address.getLongitude(), location);
                 stopItems.add(newStopItem);
                 System.out.println("Stop Item Length: " + stopItems.size());
-                System.out.println("Lat: " + stopItems.get(0).getLat() + "  Lon: " + stopItems.get(0).getLon());
+                System.out.println("Lat: " + stopItems.get(stopItems.size()-1).getLat() + "  Lon: " + stopItems.get(stopItems.size()-1).getLon());
                 adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getStopNames());
                 listview.setAdapter(adapter);
+                locationSearch.setText("");
 
             } catch (IOException e) {
                 // Make a toast telling user we couldn't find the address
@@ -121,8 +99,58 @@ public class StopsActivity extends AppCompatActivity {
             }
 
         }
+    }
 
+    private void initNavBar(){
+        nav = (BottomNavigationView) findViewById(R.id.navigation);
+        nav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            Intent intent;
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav1:
+                        //item.setChecked(true);
+                        intent = new Intent(StopsActivity.this, StopsActivity.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.nav2:
+                        //item.setChecked(true);
+                        intent = new Intent(StopsActivity.this, RouteActivity.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.nav3:
+                        //item.setChecked(true);
+                        intent = new Intent(StopsActivity.this, MapActivity.class);
+                        startActivity(intent);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
 
+    private void initRouteButton(){
+        Button routeButton = (Button) findViewById(R.id.route_button);
+        routeButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Route.run(StopsActivity.this, stopItems);
+            }
+        });
+    }
+    private void initResetButton(){
+        Button resetButton = (Button) findViewById(R.id.reset_button);
+        resetButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                listview = (ListView) findViewById(R.id.stop_list);
+                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
+                listview.setAdapter(adapter);
+                stopItems = new ArrayList<StopItem>();
+                Route.setRouteGraphic(null);
+                Route.setDirections(null);
+            }
+        });
     }
 
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class RouteActivity extends AppCompatActivity {
 
     ListView listview;
+    BottomNavigationView nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,7 @@ public class RouteActivity extends AppCompatActivity {
 
         listview = (ListView) findViewById(R.id.route_list);
 
-        BottomNavigationView nav = (BottomNavigationView) findViewById(R.id.navigation);
+        nav = (BottomNavigationView) findViewById(R.id.navigation);
         nav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             Intent intent;
 
@@ -30,18 +31,16 @@ public class RouteActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav1:
-                        //mTextMessage.setText(R.string.nav1);
+                        //item.setChecked(true);
                         intent = new Intent(RouteActivity.this, StopsActivity.class);
                         startActivity(intent);
                         return true;
                     case R.id.nav2:
-                        //mTextMessage.setText(R.string.nav2);
-                        //intent = new Intent(RouteActivity.this, RouteActivity.class);
-                        //startActivity(intent);
+                        //item.setChecked(true);
+                        intent = new Intent(RouteActivity.this, RouteActivity.class);
+                        startActivity(intent);
                         return true;
                     case R.id.nav3:
-                        //mTextMessage.setText(R.string.nav3);
-                        //nav.setSelectedItemId(R.id.nav3);
                         //item.setChecked(true);
                         intent = new Intent(RouteActivity.this, MapActivity.class);
                         startActivity(intent);
@@ -60,6 +59,8 @@ public class RouteActivity extends AppCompatActivity {
         if(directions != null && directions.size() > 0){
             System.out.println("Directions is not null");
             listview.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, directions));
+        }else{
+            listview.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>()));
         }
     }
 }
