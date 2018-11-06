@@ -1,15 +1,20 @@
 package com.geog686.geog686finalproject;
 
+import java.util.ArrayList;
+
 public class StopItem {
 
     private double lat;
     private double lon;
     private String address;
 
+    private static ArrayList<StopItem> stopItems = new ArrayList<>();
+
     public StopItem(double lat, double lon, String address){
         this.lat = lat;
         this.lon = lon;
         this.address = address;
+        stopItems.add(this);
     }
 
     public String getAddress() {
@@ -34,5 +39,13 @@ public class StopItem {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public static ArrayList<StopItem> getStopItems() {
+        return stopItems;
+    }
+
+    public static void setStopItems(ArrayList<StopItem> stopItems) {
+        StopItem.stopItems = stopItems;
     }
 }

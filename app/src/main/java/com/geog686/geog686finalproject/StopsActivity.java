@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,7 +27,6 @@ import java.util.List;
 
 public class StopsActivity extends AppCompatActivity {
 
-    private BottomNavigationView nav;
     private ListView listview;
     private ArrayAdapter<String> adapter;
     private ArrayList<StopItem> stopItems = new ArrayList<StopItem>();
@@ -36,11 +36,11 @@ public class StopsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stops);
+        getSupportActionBar().setTitle("Enter Stops");
         System.out.println("Back in Stops");
         listview = (ListView) findViewById(R.id.stop_list);
         initRouteButton();
         initResetButton();
-        initNavBar();
     }
 
     @Override
@@ -101,32 +101,17 @@ public class StopsActivity extends AppCompatActivity {
         }
     }
 
-    private void initNavBar(){
-        nav = (BottomNavigationView) findViewById(R.id.navigation);
-        nav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            Intent intent;
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.nav1:
-                        //item.setChecked(true);
-                        intent = new Intent(StopsActivity.this, StopsActivity.class);
-                        startActivity(intent);
-                        return true;
-                    case R.id.nav2:
-                        //item.setChecked(true);
-                        intent = new Intent(StopsActivity.this, RouteActivity.class);
-                        startActivity(intent);
-                        return true;
-                    case R.id.nav3:
-                        //item.setChecked(true);
-                        intent = new Intent(StopsActivity.this, MapActivity.class);
-                        startActivity(intent);
-                        return true;
-                }
-                return false;
-            }
-        });
+    public void onStopsPressed(View view){
+        Intent intent = new Intent(StopsActivity.this, StopsActivity.class);
+        startActivity(intent);
+    }
+    public void onRoutePressed(View view){
+        Intent intent = new Intent(StopsActivity.this, RouteActivity.class);
+        startActivity(intent);
+    }
+    public void onMapPressed(View view){
+        Intent intent = new Intent(StopsActivity.this, MapActivity.class);
+        startActivity(intent);
     }
 
     private void initRouteButton(){
@@ -149,6 +134,7 @@ public class StopsActivity extends AppCompatActivity {
                 stopItems = new ArrayList<StopItem>();
                 Route.setRouteGraphic(null);
                 Route.setDirections(null);
+                StopItem.setStopItems(new ArrayList<>());
             }
         });
     }

@@ -12,20 +12,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/navigation">
+        android:layout_above="@+id/navbar">
     </com.esri.arcgisruntime.mapping.view.MapView>
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
+    <RelativeLayout
+        android:id="@+id/navbar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        app:menu="@menu/navigation" />
+        android:gravity="center_horizontal">
 
 
+        <ImageButton
+            android:id="@+id/imageButtonList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/imageButtonMap"
+            android:layout_marginRight="20dp"
+            android:contentDescription="A button for Contact list"
+            android:src="@drawable/ic_menu_add"
+            android:onClick="onStopsPressed"/>
+
+        <ImageButton
+            android:id="@id/imageButtonMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_menu_directions"
+            android:onClick="onRoutePressed"/>
+
+        <ImageButton
+            android:id="@+id/imageButtonSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/imageButtonMap"
+            android:src="@drawable/ic_menu_mapmode"
+            android:onClick="onMapPressed"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>
 

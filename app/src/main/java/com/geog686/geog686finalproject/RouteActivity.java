@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -14,41 +15,14 @@ import java.util.ArrayList;
 public class RouteActivity extends AppCompatActivity {
 
     ListView listview;
-    BottomNavigationView nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
-
+        getSupportActionBar().setTitle("Directions");
         listview = (ListView) findViewById(R.id.route_list);
 
-        nav = (BottomNavigationView) findViewById(R.id.navigation);
-        nav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            Intent intent;
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.nav1:
-                        //item.setChecked(true);
-                        intent = new Intent(RouteActivity.this, StopsActivity.class);
-                        startActivity(intent);
-                        return true;
-                    case R.id.nav2:
-                        //item.setChecked(true);
-                        intent = new Intent(RouteActivity.this, RouteActivity.class);
-                        startActivity(intent);
-                        return true;
-                    case R.id.nav3:
-                        //item.setChecked(true);
-                        intent = new Intent(RouteActivity.this, MapActivity.class);
-                        startActivity(intent);
-                        return true;
-                }
-                return false;
-            }
-        });
     }
 
     @Override
@@ -62,5 +36,18 @@ public class RouteActivity extends AppCompatActivity {
         }else{
             listview.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>()));
         }
+    }
+
+    public void onStopsPressed(View view){
+        Intent intent = new Intent(RouteActivity.this, StopsActivity.class);
+        startActivity(intent);
+    }
+    public void onRoutePressed(View view){
+        Intent intent = new Intent(RouteActivity.this, RouteActivity.class);
+        startActivity(intent);
+    }
+    public void onMapPressed(View view){
+        Intent intent = new Intent(RouteActivity.this, MapActivity.class);
+        startActivity(intent);
     }
 }
