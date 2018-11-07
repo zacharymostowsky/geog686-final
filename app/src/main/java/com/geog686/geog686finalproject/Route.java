@@ -70,6 +70,7 @@ public class Route {
                     // set flags to return stops and directions
                     routeParameters.setReturnStops(true);
                     routeParameters.setReturnDirections(true);
+
                 } catch (Exception e) {
                     Log.d(LOG_TAG,"Error getting default parameters for RouteTask.");
                     e.printStackTrace();
@@ -81,7 +82,8 @@ public class Route {
                     stops.add(new Stop(stopLoc));
                 }
                 routeParameters.setStops(stops);
-
+                routeParameters.setFindBestSequence(true);
+                routeParameters.setPreserveLastStop(false);
                 Log.d(LOG_TAG, "Size of stops: " + routeParameters.getStops().size());
                 Log.d(LOG_TAG, "Stops set");
                 final ListenableFuture<RouteResult> routeResultFuture = routeTask.solveRouteAsync(routeParameters);

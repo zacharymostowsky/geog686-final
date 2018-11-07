@@ -14,7 +14,6 @@ public class StopItem {
         this.lat = lat;
         this.lon = lon;
         this.address = address;
-        stopItems.add(this);
     }
 
     public String getAddress() {
@@ -47,5 +46,13 @@ public class StopItem {
 
     public static void setStopItems(ArrayList<StopItem> stopItems) {
         StopItem.stopItems = stopItems;
+    }
+
+    public static ArrayList<String> getStopNames(){
+        ArrayList<String> stopStrings = new ArrayList<String>();
+        for(int i = 0; i < stopItems.size(); i++){
+            stopStrings.add(stopItems.get(i).getAddress());
+        }
+        return stopStrings;
     }
 }

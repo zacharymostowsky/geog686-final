@@ -4,22 +4,15 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toolbar;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,8 +21,7 @@ import java.util.List;
 public class StopsActivity extends AppCompatActivity {
 
     private ListView listview;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<StopItem> stopItems = new ArrayList<StopItem>();
+    ArrayAdapter<String> adapter;
 
     // Need to save the activity state when we leave so we are able to reload it.
     @Override
@@ -39,6 +31,15 @@ public class StopsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Enter Stops");
         System.out.println("Back in Stops");
         listview = (ListView) findViewById(R.id.stop_list);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                StopItem.getStopItems().remove(position);
+                ArrayList<String> stopStrings = StopItem.getStopNames();
+                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, stopStrings);
+                listview.setAdapter(adapter);
+            }
+        });
         initRouteButton();
         initResetButton();
     }
@@ -47,12 +48,14 @@ public class StopsActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         System.out.println("Resuming Stops");
-        ArrayList<String> stopStrings = getStopNames();
+        ArrayList<String> stopStrings = StopItem.getStopNames();
+        final ArrayList<StopItem> stopItems = StopItem.getStopItems();
 
         if(stopStrings != null && stopStrings.size() > 0){
-            System.out.println("Stops is not null");
             adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, stopStrings);
             listview.setAdapter(adapter);
+
+
         }
     }
 
@@ -61,13 +64,7 @@ public class StopsActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    private ArrayList<String> getStopNames(){
-        ArrayList<String> stopStrings = new ArrayList<String>();
-        for(int i = 0; i < stopItems.size(); i++){
-            stopStrings.add(stopItems.get(i).getAddress());
-        }
-        return stopStrings;
-    }
+
 
     public void onAddStop(View view) {
         EditText locationSearch = (EditText) findViewById(R.id.editText);
@@ -85,11 +82,12 @@ public class StopsActivity extends AppCompatActivity {
                 System.out.println("Got the address...");
                 // Create a StopItem object and add it to the list of stops
                 StopItem newStopItem = new StopItem(address.getLatitude(), address.getLongitude(), location);
-                stopItems.add(newStopItem);
-                System.out.println("Stop Item Length: " + stopItems.size());
-                System.out.println("Lat: " + stopItems.get(stopItems.size()-1).getLat() + "  Lon: " + stopItems.get(stopItems.size()-1).getLon());
-                adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getStopNames());
+                StopItem.getStopItems().add(newStopItem);
+                // System.out.println("Stop Item Length: " + stopItems.size());
+                // System.out.println("Lat: " + stopItems.get(stopItems.size()-1).getLat() + "  Lon: " + stopItems.get(stopItems.size()-1).getLon());
+                adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, StopItem.getStopNames());
                 listview.setAdapter(adapter);
+
                 locationSearch.setText("");
 
             } catch (IOException e) {
@@ -119,7 +117,7 @@ public class StopsActivity extends AppCompatActivity {
         routeButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Route.run(StopsActivity.this, stopItems);
+                Route.run(StopsActivity.this, StopItem.getStopItems());
             }
         });
     }
@@ -128,13 +126,12 @@ public class StopsActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                listview = (ListView) findViewById(R.id.stop_list);
-                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
-                listview.setAdapter(adapter);
-                stopItems = new ArrayList<StopItem>();
+                StopItem.setStopItems(new ArrayList<StopItem>());
                 Route.setRouteGraphic(null);
                 Route.setDirections(null);
                 StopItem.setStopItems(new ArrayList<>());
+                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
+                listview.setAdapter(adapter);
             }
         });
     }
